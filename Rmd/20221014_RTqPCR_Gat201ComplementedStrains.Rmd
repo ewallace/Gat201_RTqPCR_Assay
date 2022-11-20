@@ -52,6 +52,7 @@ CNAG_00121 (GDP1)
 
 
 ```{r load_packages}
+
 library(tidyverse)
 library(cowplot)
 library(tidyqpcr)
@@ -65,15 +66,16 @@ theme_set(theme_bw())
 # Create Plateplan 4 hours
 ## list target_ids of primer sets
 
-```{r target_ids_4}
+```{r target_ids}
 
 colkey <- create_colkey_6_in_24(target_id = c("Gat201", "Gat204", "Liv3", "SRP14", "ACT1", "GDP1"))
 
 print(colkey)
 ```
 
-## Set up experimental samples
-```{r samples_4}
+# Set up experimental samples
+##List sample name, BioRep (3) and TechRep (3)
+```{r samples}
 Samples <- c("H99-1", "H99-2", "H99-3", "KN99alpha-1", "KN99alpha-2", "KN99alpha-3", "deltaGat201-1", "deltaGat201-2", "deltaGat201-3", "C26-1", "C26-2", "C26-3", "C30-1", "C30-2", "C30-3")
 
 TechReps <- c("1", "2", "3")
@@ -104,7 +106,8 @@ display_plate(plate)
 
 # Load data for plate
 
-```{r plate}
+```{r load_data}
+
 plate <- read_tsv( "../Input/20221014_ComplementCheck_EH_Ct.txt",  
                     skip=1) %>%
     mutate(well=Pos,cq=Cp) %>%
@@ -116,7 +119,8 @@ plate
 
 # Split Sample column into BioRep, Time, Condition
 
-```{r separate conditions}
+```{r separate_conditions}
+
 plate_sep <- separate(plate, 
          sample_id, 
          into = c("Sample" , "BioRep"), 
@@ -126,8 +130,10 @@ view(plate_sep)
 ```
 
 
+# Plot all reps, unnormalized
 
-```{r plate_sep}
+
+```{r plot_plate_sep}
 
 ggplot(data = plate_sep) +
   geom_point(aes(x = target_id, y = cq, shape = prep_type, colour = target_id),
@@ -139,7 +145,10 @@ ggplot(data = plate_sep) +
   ) +
   facet_wrap(~sample_id) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
 ```
+
+# Check reference genes
 
 
 ```{r plate_sep_refgenes}
@@ -156,10 +165,11 @@ ggplot(data = plate_sep) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 ```
 
+# Normalise data with 3 reference genes
 
 
+```{r plate_norm}
 
-```{r}
 plate_norm <- plate_sep %>%
   group_by(sample_id)%>%
   filter(prep_type == "+RT" )%>%
@@ -187,28 +197,14 @@ ggplot(data = filter(plate_norm, target_id != c("SRP14", "ACT1", "GDP1") )) +
 
 ```{r save_jpeg}
 
-
 ggsave("../Results/ComplementCloneCheck.png", 
  ,width = 10,height=7)
 ```
 
 
+# Plot data only for Gat201
 
-```{r Plate_norm_plot_Cq}
-
-ggplot(data = filter(plate_norm, target_id == c("Gat201") )) +
-  geom_point(aes(x = target_id, y = delta_cq, colour = sample_id),
-    position = position_jitter(width = 0.2, height = 0)
-  ) +
-  labs(y = "delta Cq") +
-  facet_wrap(~sample_id) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-
-
-```
-
-
-```{r Plate_norm_plot_Cq}
+```{r Plate_norm_plot_Cq_Gat201}
 
 ggplot(data = filter(plate_norm, target_id == c("Gat201") )) +
   geom_point(aes(x = target_id, y = delta_cq, colour = sample_id),

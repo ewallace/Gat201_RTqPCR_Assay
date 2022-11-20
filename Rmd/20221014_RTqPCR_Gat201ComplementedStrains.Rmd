@@ -105,7 +105,7 @@ display_plate(plate)
 # Load data for plate
 
 ```{r plate}
-plate <- read_tsv( "~/Edward Wallace/Lab based work/ComplementedCloneChecks/20221014_ComplementCheck_EH_Ct.txt",  
+plate <- read_tsv( "../Input/20221014_ComplementCheck_EH_Ct.txt",  
                     skip=1) %>%
     mutate(well=Pos,cq=Cp) %>%
     right_join(plate)
@@ -188,7 +188,7 @@ ggplot(data = filter(plate_norm, target_id != c("SRP14", "ACT1", "GDP1") )) +
 ```{r save_jpeg}
 
 
-ggsave("~/Edward Wallace/Lab based work/ComplementedCloneChecks/ComplementCloneCheck.png", 
+ggsave("../Results/ComplementCloneCheck.png", 
  ,width = 10,height=7)
 ```
 

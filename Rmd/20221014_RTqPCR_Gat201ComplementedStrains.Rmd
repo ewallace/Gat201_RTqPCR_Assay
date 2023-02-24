@@ -181,15 +181,27 @@ plate_norm
 
 # Plot delta Cq for normalized data
 
+```{r select_samples}
+
+plot <- (data = filter(plate_norm, target_id != c("SRP14", "ACT1", "GDP1"), Sample != c("H99" )))
+```
+
+
+
 ```{r Plate_norm_plot_Cq}
 
-ggplot(data = filter(plate_norm, target_id != c("SRP14", "ACT1", "GDP1") )) +
-  geom_point(aes(x = target_id, y = delta_cq, colour = sample_id),
+ggplot(data = plot) +
+  geom_point(aes(x = target_id, y = delta_cq, shape = Sample, colour = BioRep ),
     position = position_jitter(width = 0.2, height = 0)
   ) +
-  labs(y = "delta Cq") +
   
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+  labs(x = "Target Gene", 
+       y = "Normalised Delta Cq",
+       title = "Expression of GAT201 and Targets") +
+    theme(text = element_text(size = 20)) +
+    theme(axis.text.x = element_text(size = 14))+
+    theme(axis.text.y = element_text(size= 14))+
+    scale_color_brewer(palette="Dark2")
 
 
 ```

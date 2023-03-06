@@ -97,7 +97,7 @@ plate <- label_plate_rowcol(
 )
 
 print(plate)
-display_plate(plate)
+display_plate_qpcr(plate)
 
 ```
 
@@ -184,6 +184,7 @@ plate_norm
 ```{r select_samples}
 
 plot <- (data = filter(plate_norm, target_id != c("SRP14", "ACT1", "GDP1"), Sample != c("H99" )))
+plot
 ```
 
 
